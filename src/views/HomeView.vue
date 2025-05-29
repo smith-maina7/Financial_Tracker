@@ -1,10 +1,10 @@
 <template>
   <Layout>
     <section
-      class="bg-cover bg-center text-white py-32 px-6"
+      class="bg-cover bg-center text-white py-32 px-6 static"
       style="background-image: url('/src/assets/Images/OfficeWoman.jpg')"
     >
-      <div class="bg-black bg-opacity-60 p-8 rounded-xl max-w-3xl mx-auto text-center">
+      <div class="bg-opacity-60 p-8 rounded-xl max-w-3xl mx-auto text-center">
         <h1 class="text-4xl font-bold mb-4">Experience True Financial Freedom</h1>
         <p class="text-lg mb-6">
           Start tracking your finances, budgeting smartly, and building a secure future — all in one
