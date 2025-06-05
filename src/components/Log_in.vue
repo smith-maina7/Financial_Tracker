@@ -43,6 +43,7 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import Layout from '../components/Lay_out.vue'
 
 const email = ref('')
 const password = ref('')

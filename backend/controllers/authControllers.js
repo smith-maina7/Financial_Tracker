@@ -19,8 +19,12 @@ module.exports.register = async (req, res) => {
     // Save the new user
     const newUser = await userModel.createUser({ name, email, password: hashedPassword })
 
+    const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN || '1h',
+    })
     res.status(201).json({
       message: 'User registered successfully',
+      token,
       user: {
         id: newUser.id,
         name: newUser.name,
@@ -40,17 +44,17 @@ module.exports.login = async (req, res) => {
     const user = await userModel.findUserByEmail(email)
 
     if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' })
+      return res.status(401).json({ message: 'Email does not exist' })
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password)
 
     if (!passwordMatch) {
-      return res.status(401).json({ message: 'Invalid email or password' })
+      return res.status(401).json({ message: 'Invalid password' })
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN || '1d',
+      expiresIn: process.env.JWT_EXPIRES_IN || '1h',
     })
 
     res.status(200).json({

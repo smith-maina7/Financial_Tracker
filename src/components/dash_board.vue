@@ -1,6 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-100 p-6">
-    <h1 class="text-3xl font-bold mb-6">Your Dashboard</h1>
+    <h1 class="text-3xl font-bold mb-2">Welcome, {{ userName }}</h1>
+    <p class="text-gray-500 mb-6">Here's a quick overview of your finances:</p>
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
       <div class="bg-white rounded-xl shadow p-6 text-center">
         <h2 class="text-xl font-semibold text-gray-700">Total Income</h2>
@@ -16,7 +18,7 @@
       </div>
     </div>
 
-    <!-- Placeholders for graphs, recent transactions, etc -->
+    <!-- Placeholder for recent transactions -->
     <div class="bg-white rounded-xl shadow p-6">
       <h2 class="text-2xl font-semibold mb-4">Recent Transactions</h2>
       <p class="text-gray-500">No transactions yet.</p>
@@ -25,5 +27,23 @@
 </template>
 
 <script setup>
-// Future: Fetch data with Axios after login
+import { ref, onMounted } from 'vue'
+import { jwtDecode } from 'jwt-decode'
+
+const userName = ref('')
+
+onMounted(() => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    try {
+      const decoded = jwtDecode(token)
+      userName.value = decoded.name || 'User'
+    } catch (err) {
+      console.log('Invalid token:', err)
+      userName.value = ''
+    }
+  } else {
+    userName.value = 'User'
+  }
+})
 </script>

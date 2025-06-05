@@ -62,12 +62,14 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import Layout from '../components/Lay_out.vue'
+import { useRouter } from 'vue-router'
 
 const name = ref('')
 const email = ref('')
 const password = ref('')
 const errorMessage = ref('')
 const successMessage = ref('')
+const router = useRouter()
 
 const handleRegister = async () => {
   errorMessage.value = ''
@@ -89,6 +91,10 @@ const handleRegister = async () => {
     name.value = ''
     email.value = ''
     password.value = ''
+    // Store JWT token (you can also use Pinia or Vuex)
+    localStorage.setItem('token', res.data.token)
+
+    router.push('/dashboard')
   } catch (err) {
     if (err.response?.status === 409) {
       errorMessage.value = 'Email already registered.'
