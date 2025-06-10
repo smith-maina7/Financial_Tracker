@@ -37,6 +37,8 @@ onMounted(() => {
   if (token) {
     try {
       const decoded = jwtDecode(token)
+      console.log('Decoded token:', decoded)
+
       userName.value = decoded.name || 'User'
     } catch (err) {
       console.log('Invalid token:', err)

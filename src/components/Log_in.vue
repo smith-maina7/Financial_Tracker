@@ -52,13 +52,13 @@ const router = useRouter()
 
 const handleLogin = async () => {
   try {
-    const response = await axios.post('http://localhost:3000/api/auth/login', {
-      email: email.value,
-      password: password.value,
-    })
+    const response = await axios.post(
+      'http://localhost:3000/api/auth/login',
+      { email: email.value, password: password.value },
+      { withCredentials: true }, // 👈 Important: send cookies!
+    )
 
-    // Store JWT token (you can also use Pinia or Vuex)
-    localStorage.setItem('token', response.data.token)
+    // No need to manually store the token in localStorage anymore
 
     // Redirect to dashboard or homepage
     router.push('/dashboard')

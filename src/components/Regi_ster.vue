@@ -81,18 +81,20 @@ const handleRegister = async () => {
   }
 
   try {
-    const res = await axios.post('http://localhost:3000/api/auth/register', {
-      name: name.value,
-      email: email.value,
-      password: password.value,
-    })
+    const res = await axios.post(
+      'http://localhost:3000/api/auth/register',
+      {
+        name: name.value,
+        email: email.value,
+        password: password.value,
+      },
+      { withCredentials: true }, // Important: send and receive cookies
+    )
 
     successMessage.value = 'Account created successfully!'
     name.value = ''
     email.value = ''
     password.value = ''
-    // Store JWT token (you can also use Pinia or Vuex)
-    localStorage.setItem('token', res.data.token)
 
     router.push('/dashboard')
   } catch (err) {

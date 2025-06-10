@@ -33,4 +33,19 @@ const router = createRouter({
   ],
 })
 
+// Global navigation guard
+router.beforeEach(async (to, from, next) => {
+  if (to.meta.requiresAuth) {
+    try {
+      // Call the backend to check token validity
+      await fetch('http://localhost:3000/api/auth/check-auth', { credentials: 'include' })
+      next() // Authenticated, allow access
+    } catch (error) {
+      next('/login') // Not authenticated, redirect to login
+    }
+  } else {
+    next() // Doesn't require auth
+  }
+})
+
 export default router

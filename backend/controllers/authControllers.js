@@ -6,25 +6,30 @@ module.exports.register = async (req, res) => {
   const { name, email, password } = req.body
 
   try {
-    // Check if email already exists
     const exists = await userModel.isUserRegistered(email)
     if (exists) {
       return res.status(409).json({ error: 'Email already registered' })
     }
 
-    // Hash the password
     const saltRounds = 10
     const hashedPassword = await bcrypt.hash(password, saltRounds)
 
-    // Save the new user
     const newUser = await userModel.createUser({ name, email, password: hashedPassword })
 
     const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN || '1h',
     })
+
+    // Set JWT as HttpOnly cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 1000, // 1 hour
+    })
+
     res.status(201).json({
       message: 'User registered successfully',
-      token,
       user: {
         id: newUser.id,
         name: newUser.name,
@@ -53,14 +58,22 @@ module.exports.login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid password' })
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN || '1h',
+    const token = jwt.sign(
+      { id: user.id, name: user.name, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' },
+    )
+
+    // Set JWT as HttpOnly cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 1000, // 1 hour
     })
 
     res.status(200).json({
       message: 'Login successful',
-      token,
-      user: { id: user.id, name: user.name, email: user.email },
     })
   } catch (error) {
     console.error('Login error:', error)
