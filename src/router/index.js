@@ -30,6 +30,11 @@ const router = createRouter({
       component: () => import('../components/dash_board.vue'),
       meta: { requireAuth: true },
     },
+    {
+      path: '/addExpenses',
+      name: 'addExpenses',
+      component: () => import('../components/Expenses/add_expenses.vue'),
+    },
   ],
 })
 

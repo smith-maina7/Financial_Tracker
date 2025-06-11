@@ -19,8 +19,29 @@ const createUser = async ({ name, email, password }) => {
   return res.rows[0]
 }
 
+// Add a new expense
+const addExpense = async ({ userId, amount, category, subcategory, date, description }) => {
+  const res = await pool.query(
+    `INSERT INTO expenses (user_id, amount, category, subcategory, date, description)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING *`,
+    [userId, amount, category, subcategory, date, description],
+  )
+  return res.rows[0]
+}
+
+// Get all expenses for a user
+const getUserExpenses = async (userId) => {
+  const res = await pool.query(`SELECT * FROM expenses WHERE user_id = $1 ORDER BY date DESC`, [
+    userId,
+  ])
+  return res.rows
+}
+
 module.exports = {
   findUserByEmail,
   isUserRegistered,
   createUser,
+  addExpense,
+  getUserExpenses,
 }

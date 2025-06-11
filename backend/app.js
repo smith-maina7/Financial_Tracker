@@ -18,6 +18,7 @@ app.use(cookieParser())
 app.use(express.json())
 
 app.use('/api/auth', authRoutes)
+app.use('/api/expenses', authRoutes)
 
 app.listen(port, () => {
   console.log(`Listening to port ${port}`)

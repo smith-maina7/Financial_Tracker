@@ -4,17 +4,19 @@ const authenticateToken = require('../middleware/authMiddleware')
 
 const router = express.Router()
 
-// Public routes
+// Public routes (no token needed)
 router.post('/register', authController.register)
 router.post('/login', authController.login)
 
-// Middleware to protect all routes below this line
+// Protect all routes below this line
 router.use(authenticateToken)
+
+// Protected routes (token required)
+router.post('/add', authController.addExpense)
+router.get('/', authController.getExpenses)
 
 router.get('/check-auth', (req, res) => {
   res.json({ message: 'Authenticated', user: req.user })
 })
-
-// router.get('/dashboard', dashboardController.getDashboard)
 
 module.exports = router

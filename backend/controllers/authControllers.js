@@ -80,3 +80,40 @@ module.exports.login = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' })
   }
 }
+
+module.exports.addExpense = async (req, res) => {
+  const userId = req.user.id // From authMiddleware
+  const { amount, category, subcategory, date, description } = req.body
+
+  if (!amount || !category || !subcategory || !date) {
+    return res.status(400).json({ error: 'All fields are required' })
+  }
+
+  try {
+    const newExpense = await userModel.addExpense({
+      userId,
+      amount,
+      category,
+      subcategory,
+      date,
+      description,
+    })
+
+    res.status(201).json({ message: 'Expense added successfully', expense: newExpense })
+  } catch (error) {
+    console.error('Error adding expense:', error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+module.exports.getExpenses = async (req, res) => {
+  const userId = req.user.id
+
+  try {
+    const expenses = await userModel.getUserExpenses(userId)
+    res.status(200).json({ expenses })
+  } catch (error) {
+    console.error('Error fetching expenses:', error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
